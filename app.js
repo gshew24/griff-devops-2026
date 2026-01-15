@@ -5,7 +5,7 @@ import express from 'express'
 const app = express()
 
 app.get('/', (req, res) => {
-  res.send('Hello Dev')
+  res.send('Hello Express')
 })
 
 //start the server. 
