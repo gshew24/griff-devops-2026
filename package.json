@@ -1,4 +1,5 @@
 {
+  "type": "module",
   "name": "griff-devops-2026",
   "version": "1.0.0",
   "description": "CIS486",
