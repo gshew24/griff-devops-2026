@@ -1,0 +1,492 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Attendance Portal</title>
+  <style>
+    :root {
+      --bg: #0b1220;
+      --card: #101b33;
+      --muted: #b9c3d6;
+      --text: #eef2ff;
+      --accent: #7aa2ff;
+      --accent2: #39d98a;
+      --danger: #ff5a5f;
+      --line: rgba(255,255,255,0.08);
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background: radial-gradient(1200px 700px at 20% 0%, #162a5c 0%, transparent 60%),
+                  radial-gradient(900px 600px at 90% 20%, #15304b 0%, transparent 55%),
+                  var(--bg);
+      color: var(--text);
+    }
+
+    .wrap {
+      max-width: 980px;
+      margin: 32px auto;
+      padding: 0 16px 48px;
+    }
+
+    header {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    header h1 {
+      font-size: 28px;
+      margin: 0;
+      letter-spacing: 0.2px;
+    }
+
+    header p {
+      margin: 6px 0 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 14px;
+    }
+
+    @media (max-width: 900px) {
+      .grid { grid-template-columns: 1fr; }
+    }
+
+    .card {
+      background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 16px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+    }
+
+    .card h2 {
+      margin: 0 0 10px;
+      font-size: 18px;
+      letter-spacing: 0.2px;
+    }
+
+    .row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    @media (max-width: 650px) {
+      .row { grid-template-columns: 1fr; }
+    }
+
+    label {
+      display: block;
+      font-size: 12px;
+      color: var(--muted);
+      margin: 8px 0 6px;
+    }
+
+    input {
+      width: 100%;
+      padding: 11px 12px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: rgba(0,0,0,0.15);
+      color: var(--text);
+      outline: none;
+    }
+
+    input:focus {
+      border-color: rgba(122,162,255,0.6);
+      box-shadow: 0 0 0 3px rgba(122,162,255,0.12);
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 10px;
+      align-items: center;
+    }
+
+    button {
+      border: 1px solid var(--line);
+      background: rgba(122,162,255,0.15);
+      color: var(--text);
+      padding: 10px 12px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: 600;
+      letter-spacing: 0.2px;
+    }
+
+    button:hover { background: rgba(122,162,255,0.22); }
+    button.primary { background: rgba(57,217,138,0.18); }
+    button.primary:hover { background: rgba(57,217,138,0.26); }
+    button.danger { background: rgba(255,90,95,0.16); }
+    button.danger:hover { background: rgba(255,90,95,0.24); }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .msg {
+      margin-top: 12px;
+      border-radius: 12px;
+      padding: 10px 12px;
+      border: 1px solid var(--line);
+      display: none;
+    }
+    .msg.ok { display: block; background: rgba(57,217,138,0.10); }
+    .msg.err { display: block; background: rgba(255,90,95,0.10); }
+
+    .list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      max-height: 520px;
+      overflow: auto;
+      padding-right: 4px;
+    }
+
+    .record {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 12px;
+      background: rgba(0,0,0,0.12);
+    }
+
+    .record-top {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+
+    .record strong { font-size: 15px; }
+    .meta { color: var(--muted); font-size: 12px; }
+
+    .record-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 8px;
+    }
+
+    .small {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div>
+        <h1>Attendance Portal</h1>
+        <p>Record today’s attendance and manage entries.</p>
+      </div>
+      <div class="pill">
+        <span>Server:</span>
+        <span id="healthDot" class="mono">checking…</span>
+      </div>
+    </header>
+
+    <div class="grid">
+      <!-- Left: Form -->
+      <section class="card">
+        <h2>Check In</h2>
+        <div class="small">Tip: “Update mode” turns on when you choose Edit on a record.</div>
+
+        <div class="row">
+          <div>
+            <label for="studentName">Student name</label>
+            <input id="studentName" placeholder="e.g., Jordan Smith" autocomplete="off" />
+          </div>
+          <div>
+            <label for="dateText">Date</label>
+            <input id="dateText" placeholder="e.g., February 19, 2026" autocomplete="off" />
+          </div>
+        </div>
+
+        <div class="row">
+          <div>
+            <label for="keyword">Keyword</label>
+            <input id="keyword" placeholder="word from board" autocomplete="off" />
+          </div>
+          <div>
+            <label>&nbsp;</label>
+            <div class="actions">
+              <button class="primary" id="submitBtn">Record</button>
+              <button id="refreshBtn" type="button">Refresh</button>
+              <button id="cancelEditBtn" type="button" style="display:none;">Cancel Edit</button>
+            </div>
+          </div>
+        </div>
+
+        <div id="message" class="msg"></div>
+
+        <hr style="border:0;border-top:1px solid var(--line);margin:16px 0;">
+
+        <h2 style="margin-top:0;">Class Info</h2>
+        <div id="classInfo" class="small">Loading…</div>
+      </section>
+
+      <!-- Right: List -->
+      <section class="card">
+        <h2>Records</h2>
+        <div class="small">Newest first.</div>
+        <div id="attendanceList" class="list" style="margin-top:10px;">
+          <div class="small">Loading…</div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script>
+    let editId = null;
+
+    const els = {
+      studentName: document.getElementById('studentName'),
+      dateText: document.getElementById('dateText'),
+      keyword: document.getElementById('keyword'),
+      submitBtn: document.getElementById('submitBtn'),
+      refreshBtn: document.getElementById('refreshBtn'),
+      cancelEditBtn: document.getElementById('cancelEditBtn'),
+      message: document.getElementById('message'),
+      classInfo: document.getElementById('classInfo'),
+      attendanceList: document.getElementById('attendanceList'),
+      healthDot: document.getElementById('healthDot')
+    };
+
+    function showMessage(text, ok=true) {
+      els.message.textContent = text;
+      els.message.className = 'msg ' + (ok ? 'ok' : 'err');
+      setTimeout(() => {
+        els.message.className = 'msg';
+        els.message.textContent = '';
+      }, 3200);
+    }
+
+    function setEditMode(id) {
+      editId = id;
+      els.submitBtn.textContent = 'Update';
+      els.cancelEditBtn.style.display = 'inline-block';
+    }
+
+    function clearEditMode() {
+      editId = null;
+      els.submitBtn.textContent = 'Record';
+      els.cancelEditBtn.style.display = 'none';
+    }
+
+    async function apiJson(url, opts) {
+      const res = await fetch(url, opts);
+      const data = await res.json().catch(() => ({}));
+      return { res, data };
+    }
+
+    async function loadHealth() {
+      try {
+        const { res, data } = await apiJson('/api/health');
+        if (!res.ok) throw new Error('bad');
+        els.healthDot.textContent = 'online';
+        els.healthDot.style.color = 'var(--accent2)'
+
+      } catch {
+        els.healthDot.textContent = 'offline';
+        els.healthDot.style.color = 'var(--danger)';
+      }
+    }
+
+    async function loadClass() {
+      try {
+        const { res, data } = await apiJson('/api/class');
+        if (!res.ok) throw new Error('bad');
+        els.classInfo.innerHTML = `
+          <div><strong>${data.courseNumber}</strong> — ${data.courseName}</div>
+          <div class="small">Nickname: ${data.nickname}</div>
+          <div class="small">Semester: ${data.semester}</div>
+          <div class="small">Calendar: ${data.calendar}</div>
+        `;
+      } catch {
+        els.classInfo.textContent = 'Could not load class info.';
+      }
+    }
+
+    function escapeHtml(s) {
+      return String(s)
+        .replaceAll('&','&amp;')
+        .replaceAll('<','&lt;')
+        .replaceAll('>','&gt;')
+        .replaceAll('"','&quot;')
+        .replaceAll("'","&#39;");
+    }
+
+    async function loadAttendance() {
+      els.attendanceList.innerHTML = '<div class="small">Loading…</div>';
+
+      try {
+        const { res, data } = await apiJson('/api/attendance');
+        if (!res.ok) throw new Error('bad');
+
+        const records = Array.isArray(data) ? data : [];
+        // newest first
+        records.sort((a, b) => new Date(b.timestamp || 0) - new Date(a.timestamp || 0));
+
+        if (records.length === 0) {
+          els.attendanceList.innerHTML = '<div class="small">No records yet.</div>';
+          return;
+        }
+
+        els.attendanceList.innerHTML = records.map(r => {
+          const id = r._id;
+          const name = escapeHtml(r.studentName ?? '');
+          const date = escapeHtml(r.date ?? '');
+          const keyword = escapeHtml(r.keyword ?? '');
+          const ts = r.timestamp ? new Date(r.timestamp).toLocaleString() : '';
+
+          return `
+            <div class="record" data-id="${escapeHtml(id)}">
+              <div class="record-top">
+                <div><strong>${name}</strong></div>
+                <div class="meta">${date}</div>
+              </div>
+              <div class="meta">Keyword: <span class="mono">${keyword}</span></div>
+              <div class="meta">Recorded: ${escapeHtml(ts)}</div>
+
+              <div class="record-actions">
+                <button type="button" data-action="edit">Edit</button>
+                <button type="button" class="danger" data-action="delete">Delete</button>
+              </div>
+            </div>
+          `;
+        }).join('');
+
+      } catch {
+        els.attendanceList.innerHTML = '<div class="small">Error loading attendance records.</div>';
+      }
+    }
+
+    async function submitAttendance() {
+      const studentName = els.studentName.value.trim();
+      const date = els.dateText.value.trim();
+      const keyword = els.keyword.value.trim();
+
+      if (!studentName || !date || !keyword) {
+        showMessage('Please fill in name, date, and keyword.', false);
+        return;
+      }
+
+      const url = editId ? `/api/attendance/${editId}` : '/api/attendance';
+      const method = editId ? 'PUT' : 'POST';
+
+      const { res, data } = await apiJson(url, {
+        method,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ studentName, date, keyword })
+      });
+
+      if (res.ok) {
+        showMessage(data.message || (editId ? 'Updated.' : 'Recorded.'), true);
+        els.studentName.value = '';
+        els.keyword.value = '';
+        // keep date as-is
+        clearEditMode();
+        await loadAttendance();
+      } else {
+        showMessage(data.error || 'Request failed.', false);
+      }
+    }
+
+    async function deleteRecord(id) {
+      const ok = confirm('Delete this record?');
+      if (!ok) return;
+
+      const { res, data } = await apiJson(`/api/attendance/${id}`, { method: 'DELETE' });
+
+      if (res.ok) {
+        showMessage(data.message || 'Deleted.', true);
+        await loadAttendance();
+      } else {
+        showMessage(data.error || 'Delete failed.', false);
+      }
+    }
+
+    // Event wiring
+    els.submitBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      submitAttendance();
+    });
+
+    els.refreshBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      loadAttendance();
+    });
+
+    els.cancelEditBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      clearEditMode();
+      showMessage('Edit canceled.', true);
+    });
+
+    els.attendanceList.addEventListener('click', (e) => {
+      const btn = e.target.closest('button');
+      if (!btn) return;
+
+      const recordEl = e.target.closest('.record');
+      if (!recordEl) return;
+
+      const id = recordEl.getAttribute('data-id');
+      const action = btn.getAttribute('data-action');
+
+      if (action === 'delete') {
+        deleteRecord(id);
+        return;
+      }
+
+      if (action === 'edit') {
+        // Read values from the displayed record text
+        const name = recordEl.querySelector('strong')?.textContent ?? '';
+        const date = recordEl.querySelector('.record-top .meta')?.textContent ?? '';
+        const keywordText = recordEl.querySelector('.mono')?.textContent ?? '';
+
+        els.studentName.value = name;
+        els.dateText.value = date;
+        els.keyword.value = keywordText;
+
+        setEditMode(id);
+        showMessage('Edit mode: update the fields, then click Update.', true);
+      }
+    });
+
+    // Initialize
+    (function init() {
+      const now = new Date();
+      els.dateText.value = now.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+      loadHealth();
+      loadClass();
+      loadAttendance();
+    })();
+  </script>
+</body>
+</html>
