@@ -17,10 +17,11 @@ jobs:
           mkdir -p "$HOME/.ssh"
           chmod 700 "$HOME/.ssh"
 
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > "$HOME/.ssh/id_rsa"
-          chmod 600 "$HOME/.ssh/id_rsa"
+          # Write private key and Windows line endings
+          printf '%s\n' "${{ secrets.SSH_PRIVATE_KEY }}" | tr -d '\r' > "$HOME/.ssh/id_ed25519"
+          chmod 600 "$HOME/.ssh/id_ed25519"
 
-          # safer than StrictHostKeyChecking=no
+          # Add host to known_hosts
           ssh-keyscan -H "${{ secrets.SSH_HOST }}" >> "$HOME/.ssh/known_hosts"
           chmod 644 "$HOME/.ssh/known_hosts"
 
@@ -32,7 +33,7 @@ jobs:
           APP_DIR:  ${{ vars.APP_DIR }}
           PM2_NAME: ${{ vars.PM2_NAME }}
         run: |
-          ssh -i "$HOME/.ssh/id_rsa" -T "$SSH_USER@$SSH_HOST" <<EOF
+          ssh -i "$HOME/.ssh/id_ed25519" -T "$SSH_USER@$SSH_HOST" <<EOF
             set -e
 
             cd "$APP_DIR"
