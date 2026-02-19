@@ -1,25 +1,13 @@
-//app.js
-//es5 syntax => import express from 'express'
-//we are in es6
-import express from 'express'
-import { fileURLToPath } from 'url';
-import { dirname, join } from 'path';
+import express from 'express';
 
-const app = express()
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-const readFile = FileSystem.readFile('.')
-let myVar = 'demo purposes only';
+const app = express();
 
-//middlewares aka endpoints aka 'get to slash' {http verb} to slash {you name your endpoint}
-app.post('api/body', (req, res) => {
-  //res.send('Hello Express')
-  //res.sendfile('index.html')
-  res.sendFile(join(__dirname, 'public', 'barry.html')) 
+// basic test route
+app.get('/', (req, res) => {
+  res.send('Hello Express from PM2 + NGINX');
+});
 
-})
-
-//start the server. 
+// start server
 app.listen(3000, () => {
-  console.log('Server is running on http://localhost:3000')
-})
+  console.log('Server is running on http://localhost:3000');
+});
