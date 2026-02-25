@@ -14,12 +14,13 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "module",
   "bugs": {
     "url": "https://github.com/gshew24/griff-devops-2026/issues"
   },
   "homepage": "https://github.com/gshew24/griff-devops-2026#readme",
   "dependencies": {
-    "express": "^5.2.1"
+    "dotenv": "^17.3.1",
+    "express": "^5.2.1",
+    "mongodb": "^7.1.0"
   }
 }
