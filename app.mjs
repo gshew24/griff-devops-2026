@@ -2,6 +2,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 import express from 'express';
+import { MongoClient, ObjectId, ServerApiVersion } from 'mongodb';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 import { readFile } from 'fs/promises';
@@ -16,8 +17,32 @@ app.use(express.json());
 
 const serverVar = 'server variable example';
 
-// In-memory attendance storage (works immediately)
-const attendance = [];
+// Mongo setup
+const uri = process.env.MONGO_URI;
+if (!uri) {
+  console.error('MONGO_URI is missing. Check your .env file.');
+}
+
+const client = new MongoClient(uri, {
+  serverApi: {
+    version: ServerApiVersion.v1,
+    strict: true,
+    deprecationErrors: true,
+  },
+});
+
+let db;
+const DB_NAME = 'cis486';
+const COLLECTION = 'attendance';
+
+async function connectToMongo() {
+  await client.connect();
+  await client.db('admin').command({ ping: 1 });
+  db = client.db(DB_NAME);
+  console.log('Connected to MongoDB');
+}
+
+await connectToMongo();
 
 // Pages
 app.get('/', (req, res) => {
@@ -59,59 +84,90 @@ app.get('/api/class', (req, res) => {
 });
 
 // CREATE
-app.post('/api/attendance', (req, res) => {
-  const { studentName, date, keyword } = req.body || {};
-  if (!studentName || !date || !keyword) {
-    return res.status(400).json({ error: 'Missing required fields' });
+app.post('/api/attendance', async (req, res) => {
+  try {
+    const { studentName, date, keyword } = req.body || {};
+    if (!studentName || !date || !keyword) {
+      return res.status(400).json({ error: 'Missing required fields' });
+    }
+
+    const record = {
+      studentName,
+      date,
+      keyword,
+      timestamp: new Date(),
+    };
+
+    const result = await db.collection(COLLECTION).insertOne(record);
+    return res.json({ message: 'Attendance recorded!', id: result.insertedId });
+  } catch (err) {
+    return res.status(500).json({ error: err.message });
   }
-
-  const record = {
-    _id: String(Date.now()),
-    studentName,
-    date,
-    keyword,
-    timestamp: new Date().toISOString(),
-  };
-
-  attendance.push(record);
-  return res.json({ message: 'Attendance recorded!', id: record._id });
 });
 
 // READ
-app.get('/api/attendance', (req, res) => {
-  res.json(attendance);
+app.get('/api/attendance', async (req, res) => {
+  try {
+    const records = await db
+      .collection(COLLECTION)
+      .find({})
+      .sort({ timestamp: -1 })
+      .toArray();
+
+    return res.json(records);
+  } catch (err) {
+    return res.status(500).json({ error: err.message });
+  }
 });
 
 // UPDATE
-app.put('/api/attendance/:id', (req, res) => {
-  const { id } = req.params;
-  const { studentName, date, keyword } = req.body || {};
-  if (!studentName || !date || !keyword) {
-    return res.status(400).json({ error: 'Missing required fields' });
+app.put('/api/attendance/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { studentName, date, keyword } = req.body || {};
+    if (!studentName || !date || !keyword) {
+      return res.status(400).json({ error: 'Missing required fields' });
+    }
+
+    const result = await db.collection(COLLECTION).updateOne(
+      { _id: new ObjectId(id) },
+      {
+        $set: {
+          studentName,
+          date,
+          keyword,
+          updatedAt: new Date(),
+        },
+      }
+    );
+
+    if (result.matchedCount === 0) {
+      return res.status(404).json({ error: 'Record not found' });
+    }
+
+    return res.json({ message: 'Attendance updated!' });
+  } catch (err) {
+    return res.status(500).json({ error: err.message });
   }
-
-  const idx = attendance.findIndex(r => r._id === id);
-  if (idx === -1) return res.status(404).json({ error: 'Record not found' });
-
-  attendance[idx] = {
-    ...attendance[idx],
-    studentName,
-    date,
-    keyword,
-    updatedAt: new Date().toISOString(),
-  };
-
-  return res.json({ message: 'Attendance updated!' });
 });
 
 // DELETE
-app.delete('/api/attendance/:id', (req, res) => {
-  const { id } = req.params;
-  const idx = attendance.findIndex(r => r._id === id);
-  if (idx === -1) return res.status(404).json({ error: 'Record not found' });
+app.delete('/api/attendance/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
 
-  attendance.splice(idx, 1);
-  return res.json({ message: 'Attendance deleted!' });
+    const result = await db.collection(COLLECTION).deleteOne({
+      _id: new ObjectId(id),
+    });
+
+    if (result.deletedCount === 0) {
+      return res.status(404).json({ error: 'Record not found' });
+    }
+
+    return res.json({ message: 'Attendance deleted!' });
+  } catch (err) {
+    return res.status(500).json({ error: err.message });
+  }
 });
 
 // Start server
