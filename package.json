@@ -1,18 +1,26 @@
 {
   "type": "module",
-  "name": "griff-devops-2026",
+  "name": "fittrack",
   "version": "1.0.0",
-  "description": "CIS486",
-  "main": "index.js",
+  "description": "FitTrack is a simple nutrition and macro tracking app inspired by MyFitnessPal. Built by Griffin Shewbart for CIS 486 using Node.js, Express, MongoDB, Render, and GCP.",
+  "main": "app.mjs",
   "scripts": {
-    "start": "node app.mjs"
+    "start": "node app.mjs",
+    "dev": "nodemon app.mjs"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/gshew24/griff-devops-2026.git"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "fitness",
+    "nutrition",
+    "macros",
+    "mongodb",
+    "express",
+    "node"
+  ],
+  "author": "Griffin Shewbart",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/gshew24/griff-devops-2026/issues"
@@ -22,5 +30,8 @@
     "dotenv": "^16.4.5",
     "express": "^4.18.2",
     "mongodb": "^6.5.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
   }
 }
