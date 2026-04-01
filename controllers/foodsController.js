@@ -1,70 +1,28 @@
-import dotenv from 'dotenv';
-dotenv.config();
-
-import express from 'express';
 import { ObjectId } from 'mongodb';
-import { fileURLToPath } from 'url';
-import { dirname, join } from 'path';
-import { readFile } from 'fs/promises';
-import { connectDB, getDB } from './config/db.js';
-
-const app = express();
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-
-app.use(express.static(join(__dirname, 'public'), { index: false }));
-app.use(express.json());
-
-await connectDB();
-const db = getDB();
+import { getDB } from '../config/db.js';
 
 const COLLECTION = 'foods';
 
-// Pages
-app.get('/', (req, res) => {
-  res.sendFile(join(__dirname, 'public', 'attend.html'));
-});
-
-app.get('/inject', async (req, res) => {
+export async function getFoods(req, res) {
   try {
-    const html = await readFile(join(__dirname, 'public', 'index.html'), 'utf8');
-    res.send(html);
+    const db = getDB();
+
+    const records = await db
+      .collection(COLLECTION)
+      .find({})
+      .sort({ timestamp: -1 })
+      .toArray();
+
+    return res.status(200).json(records);
   } catch (err) {
-    res.status(500).send('Error loading page');
+    return res.status(500).json({ error: err.message });
   }
-});
+}
 
-// API
-app.get('/api/health', (req, res) => {
-  res.json({
-    status: 'healthy',
-    app: 'FitTrack',
-    author: 'Griffin Shewbart',
-    timestamp: new Date().toISOString(),
-    endpoints: [
-      'GET /api/class',
-      'GET /api/foods',
-      'POST /api/foods',
-      'PUT /api/foods/:id',
-      'DELETE /api/foods/:id',
-    ],
-  });
-});
-
-app.get('/api/class', (req, res) => {
-  res.json({
-    appName: 'FitTrack',
-    purpose: 'A simple nutrition and macro tracking app inspired by MyFitnessPal',
-    author: 'Griffin Shewbart',
-    stack: 'Node.js, Express.js, MongoDB, Bootstrap, jQuery, Render, GCP',
-    semester: 'Spring 2026',
-  });
-});
-
-// CREATE
-app.post('/api/foods', async (req, res) => {
+export async function createFood(req, res) {
   try {
+    const db = getDB();
+
     const {
       foodName,
       mealType,
@@ -107,27 +65,13 @@ app.post('/api/foods', async (req, res) => {
   } catch (err) {
     return res.status(500).json({ error: err.message });
   }
-});
+}
 
-// READ
-app.get('/api/foods', async (req, res) => {
+export async function updateFood(req, res) {
   try {
-    const records = await db
-      .collection(COLLECTION)
-      .find({})
-      .sort({ timestamp: -1 })
-      .toArray();
-
-    return res.status(200).json(records);
-  } catch (err) {
-    return res.status(500).json({ error: err.message });
-  }
-});
-
-// UPDATE
-app.put('/api/foods/:id', async (req, res) => {
-  try {
+    const db = getDB();
     const { id } = req.params;
+
     const {
       foodName,
       mealType,
@@ -178,11 +122,11 @@ app.put('/api/foods/:id', async (req, res) => {
   } catch (err) {
     return res.status(500).json({ error: err.message });
   }
-});
+}
 
-// DELETE
-app.delete('/api/foods/:id', async (req, res) => {
+export async function deleteFood(req, res) {
   try {
+    const db = getDB();
     const { id } = req.params;
 
     if (!ObjectId.isValid(id)) {
@@ -201,9 +145,4 @@ app.delete('/api/foods/:id', async (req, res) => {
   } catch (err) {
     return res.status(500).json({ error: err.message });
   }
-});
-
-// Start server
-app.listen(3000, () => {
-  console.log('FitTrack server is running on http://localhost:3000');
-});
+}
