@@ -1,12 +1,15 @@
 import dotenv from 'dotenv';
 dotenv.config();
+console.log('MONGO_URI:', process.env.MONGO_URI);
 
 import express from 'express';
-import { ObjectId } from 'mongodb';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 import { readFile } from 'fs/promises';
-import { connectDB, getDB } from './config/db.js';
+
+import { connectDB } from './config/db.js';
+import foodsRoutes from './routes/foodsRoutes.js';
+import authRoutes from './routes/authRoutes.js';
 
 const app = express();
 
@@ -17,11 +20,7 @@ app.use(express.static(join(__dirname, 'public'), { index: false }));
 app.use(express.json());
 
 await connectDB();
-const db = getDB();
 
-const COLLECTION = 'foods';
-
-// Pages
 app.get('/', (req, res) => {
   res.sendFile(join(__dirname, 'public', 'attend.html'));
 });
@@ -35,7 +34,6 @@ app.get('/inject', async (req, res) => {
   }
 });
 
-// API
 app.get('/api/health', (req, res) => {
   res.json({
     status: 'healthy',
@@ -43,6 +41,8 @@ app.get('/api/health', (req, res) => {
     author: 'Griffin Shewbart',
     timestamp: new Date().toISOString(),
     endpoints: [
+      'POST /api/auth/register',
+      'POST /api/auth/login',
       'GET /api/class',
       'GET /api/foods',
       'POST /api/foods',
@@ -57,153 +57,17 @@ app.get('/api/class', (req, res) => {
     appName: 'FitTrack',
     purpose: 'A simple nutrition and macro tracking app inspired by MyFitnessPal',
     author: 'Griffin Shewbart',
-    stack: 'Node.js, Express.js, MongoDB, Bootstrap, jQuery, Render, GCP',
+    stack: 'Node.js, Express.js, MongoDB Atlas, Mongoose, Bootstrap, jQuery, JWT, GCP',
     semester: 'Spring 2026',
   });
 });
 
-// CREATE
-app.post('/api/foods', async (req, res) => {
-  try {
-    const {
-      foodName,
-      mealType,
-      calories,
-      protein,
-      carbs,
-      fat,
-      date,
-    } = req.body || {};
 
-    if (
-      !foodName ||
-      !mealType ||
-      calories === undefined ||
-      protein === undefined ||
-      carbs === undefined ||
-      fat === undefined ||
-      !date
-    ) {
-      return res.status(400).json({ error: 'Missing required fields' });
-    }
+app.use('/api/auth', authRoutes);
+app.use('/api/foods', foodsRoutes);
 
-    const record = {
-      foodName: String(foodName).trim(),
-      mealType: String(mealType).trim(),
-      calories: Number(calories),
-      protein: Number(protein),
-      carbs: Number(carbs),
-      fat: Number(fat),
-      date: String(date).trim(),
-      timestamp: new Date(),
-    };
+const PORT = process.env.PORT || 3000;
 
-    const result = await db.collection(COLLECTION).insertOne(record);
-
-    return res.status(201).json({
-      message: 'Food entry created!',
-      id: result.insertedId,
-    });
-  } catch (err) {
-    return res.status(500).json({ error: err.message });
-  }
-});
-
-// READ
-app.get('/api/foods', async (req, res) => {
-  try {
-    const records = await db
-      .collection(COLLECTION)
-      .find({})
-      .sort({ timestamp: -1 })
-      .toArray();
-
-    return res.status(200).json(records);
-  } catch (err) {
-    return res.status(500).json({ error: err.message });
-  }
-});
-
-// UPDATE
-app.put('/api/foods/:id', async (req, res) => {
-  try {
-    const { id } = req.params;
-    const {
-      foodName,
-      mealType,
-      calories,
-      protein,
-      carbs,
-      fat,
-      date,
-    } = req.body || {};
-
-    if (!ObjectId.isValid(id)) {
-      return res.status(400).json({ error: 'Invalid record id' });
-    }
-
-    if (
-      !foodName ||
-      !mealType ||
-      calories === undefined ||
-      protein === undefined ||
-      carbs === undefined ||
-      fat === undefined ||
-      !date
-    ) {
-      return res.status(400).json({ error: 'Missing required fields' });
-    }
-
-    const result = await db.collection(COLLECTION).updateOne(
-      { _id: new ObjectId(id) },
-      {
-        $set: {
-          foodName: String(foodName).trim(),
-          mealType: String(mealType).trim(),
-          calories: Number(calories),
-          protein: Number(protein),
-          carbs: Number(carbs),
-          fat: Number(fat),
-          date: String(date).trim(),
-          updatedAt: new Date(),
-        },
-      }
-    );
-
-    if (result.matchedCount === 0) {
-      return res.status(404).json({ error: 'Record not found' });
-    }
-
-    return res.status(200).json({ message: 'Food entry updated!' });
-  } catch (err) {
-    return res.status(500).json({ error: err.message });
-  }
-});
-
-// DELETE
-app.delete('/api/foods/:id', async (req, res) => {
-  try {
-    const { id } = req.params;
-
-    if (!ObjectId.isValid(id)) {
-      return res.status(400).json({ error: 'Invalid record id' });
-    }
-
-    const result = await db.collection(COLLECTION).deleteOne({
-      _id: new ObjectId(id),
-    });
-
-    if (result.deletedCount === 0) {
-      return res.status(404).json({ error: 'Record not found' });
-    }
-
-    return res.status(200).json({ message: 'Food entry deleted!' });
-  } catch (err) {
-    return res.status(500).json({ error: err.message });
-  }
-});
-
-// Start server
-app.listen(3000, () => {
-  console.log('FitTrack server is running on http://localhost:3000');
+app.listen(PORT, () => {
+  console.log(`FitTrack server is running on http://localhost:${PORT}`);
 });

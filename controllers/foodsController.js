@@ -1,18 +1,8 @@
-import { ObjectId } from 'mongodb';
-import { getDB } from '../config/db.js';
-
-const COLLECTION = 'foods';
+import Food from '../models/Food.js';
 
 export async function getFoods(req, res) {
   try {
-    const db = getDB();
-
-    const records = await db
-      .collection(COLLECTION)
-      .find({})
-      .sort({ timestamp: -1 })
-      .toArray();
-
+    const records = await Food.find({}).sort({ createdAt: -1 });
     return res.status(200).json(records);
   } catch (err) {
     return res.status(500).json({ error: err.message });
@@ -21,8 +11,6 @@ export async function getFoods(req, res) {
 
 export async function createFood(req, res) {
   try {
-    const db = getDB();
-
     const {
       foodName,
       mealType,
@@ -45,22 +33,21 @@ export async function createFood(req, res) {
       return res.status(400).json({ error: 'Missing required fields' });
     }
 
-    const record = {
-      foodName: String(foodName).trim(),
-      mealType: String(mealType).trim(),
-      calories: Number(calories),
-      protein: Number(protein),
-      carbs: Number(carbs),
-      fat: Number(fat),
-      date: String(date).trim(),
-      timestamp: new Date(),
-    };
+    const newFood = new Food({
+      foodName,
+      mealType,
+      calories,
+      protein,
+      carbs,
+      fat,
+      date,
+    });
 
-    const result = await db.collection(COLLECTION).insertOne(record);
+    await newFood.save();
 
     return res.status(201).json({
       message: 'Food entry created!',
-      id: result.insertedId,
+      id: newFood._id,
     });
   } catch (err) {
     return res.status(500).json({ error: err.message });
@@ -69,7 +56,6 @@ export async function createFood(req, res) {
 
 export async function updateFood(req, res) {
   try {
-    const db = getDB();
     const { id } = req.params;
 
     const {
@@ -82,39 +68,21 @@ export async function updateFood(req, res) {
       date,
     } = req.body || {};
 
-    if (!ObjectId.isValid(id)) {
-      return res.status(400).json({ error: 'Invalid record id' });
-    }
-
-    if (
-      !foodName ||
-      !mealType ||
-      calories === undefined ||
-      protein === undefined ||
-      carbs === undefined ||
-      fat === undefined ||
-      !date
-    ) {
-      return res.status(400).json({ error: 'Missing required fields' });
-    }
-
-    const result = await db.collection(COLLECTION).updateOne(
-      { _id: new ObjectId(id) },
+    const updated = await Food.findByIdAndUpdate(
+      id,
       {
-        $set: {
-          foodName: String(foodName).trim(),
-          mealType: String(mealType).trim(),
-          calories: Number(calories),
-          protein: Number(protein),
-          carbs: Number(carbs),
-          fat: Number(fat),
-          date: String(date).trim(),
-          updatedAt: new Date(),
-        },
-      }
+        foodName,
+        mealType,
+        calories,
+        protein,
+        carbs,
+        fat,
+        date,
+      },
+      { new: true, runValidators: true }
     );
 
-    if (result.matchedCount === 0) {
+    if (!updated) {
       return res.status(404).json({ error: 'Record not found' });
     }
 
@@ -126,18 +94,11 @@ export async function updateFood(req, res) {
 
 export async function deleteFood(req, res) {
   try {
-    const db = getDB();
     const { id } = req.params;
 
-    if (!ObjectId.isValid(id)) {
-      return res.status(400).json({ error: 'Invalid record id' });
-    }
+    const deleted = await Food.findByIdAndDelete(id);
 
-    const result = await db.collection(COLLECTION).deleteOne({
-      _id: new ObjectId(id),
-    });
-
-    if (result.deletedCount === 0) {
+    if (!deleted) {
       return res.status(404).json({ error: 'Record not found' });
     }
 

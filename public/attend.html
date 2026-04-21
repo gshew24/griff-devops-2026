@@ -4,25 +4,19 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>FitTrack</title>
-
-  <!-- Required front-end frameworks -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" />
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
-
   <style>
     :root {
       --bg: #0b1220;
       --card: #101b33;
-      --muted: #ffffff;
       --text: #eef2ff;
       --accent: #7aa2ff;
       --accent2: #39d98a;
       --danger: #ff5a5f;
       --line: rgba(255,255,255,0.08);
     }
-
     * { box-sizing: border-box; }
-
     body {
       margin: 0;
       font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
@@ -33,301 +27,78 @@
       color: var(--text);
       min-height: 100vh;
     }
-
-    .wrap {
-      max-width: 1150px;
-      margin: 32px auto;
-      padding: 0 16px 48px;
-    }
-
+    .wrap { max-width: 1150px; margin: 32px auto; padding: 0 16px 48px; }
     header {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: flex-end;
-      justify-content: space-between;
-      gap: 12px;
-      margin-bottom: 18px;
+      display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between;
+      gap: 12px; margin-bottom: 18px;
     }
-
-    header h1 {
-      font-size: 32px;
-      margin: 0;
-      letter-spacing: 0.2px;
-      font-weight: 800;
-      color: #ffffff;
-    }
-
-    header p {
-      margin: 6px 0 0;
-      color: #ffffff;
-      font-size: 14px;
-    }
-
+    header h1 { font-size: 32px; margin: 0; font-weight: 800; color: #fff; }
+    header p { margin: 6px 0 0; color: #fff; font-size: 14px; }
     .pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 6px 10px;
-      border-radius: 999px;
-      border: 1px solid var(--line);
-      color: #ffffff;
-      font-size: 12px;
+      display: inline-flex; align-items: center; gap: 8px; padding: 6px 10px;
+      border-radius: 999px; border: 1px solid var(--line); color: #fff; font-size: 12px;
     }
-
-    .summary-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 12px;
-      margin-bottom: 14px;
-    }
-
-    @media (max-width: 900px) {
-      .summary-grid {
-        grid-template-columns: repeat(2, 1fr);
-      }
-    }
-
-    @media (max-width: 500px) {
-      .summary-grid {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    .summary-card,
-    .card {
+    .auth-bar, .summary-card, .card {
       background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
       border: 1px solid var(--line);
       border-radius: 16px;
       padding: 16px;
       box-shadow: 0 8px 20px rgba(0,0,0,0.25);
     }
-
-    .summary-card h3 {
-      margin: 0 0 6px;
-      font-size: 13px;
-      color: #ffffff;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.6px;
+    .auth-bar { margin-bottom: 14px; }
+    .summary-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 14px; }
+    @media (max-width: 900px) { .summary-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 500px) { .summary-grid { grid-template-columns: 1fr; } }
+    .summary-card h3 { margin: 0 0 6px; font-size: 13px; color: #fff; font-weight: 600; text-transform: uppercase; }
+    .summary-card .value { font-size: 28px; font-weight: 800; line-height: 1; color: #fff; }
+    .grid { display: grid; grid-template-columns: 1.05fr 0.95fr; gap: 14px; }
+    @media (max-width: 980px) { .grid { grid-template-columns: 1fr; } }
+    .card h2 { margin: 0 0 10px; font-size: 22px; font-weight: 700; color: #fff; }
+    .small { font-size: 12px; color: #fff; }
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+    @media (max-width: 700px) { .form-grid { grid-template-columns: 1fr; } }
+    label { display: block; font-size: 12px; color: #fff; margin: 8px 0 6px; }
+    input, select {
+      width: 100%; padding: 11px 12px; border-radius: 12px; border: 1px solid var(--line);
+      background: rgba(0,0,0,0.15); color: #fff !important; outline: none;
     }
-
-    .summary-card .value {
-      font-size: 28px;
-      font-weight: 800;
-      line-height: 1;
-      color: #ffffff;
-    }
-
-    .grid {
-      display: grid;
-      grid-template-columns: 1.05fr 0.95fr;
-      gap: 14px;
-    }
-
-    @media (max-width: 980px) {
-      .grid { grid-template-columns: 1fr; }
-    }
-
-    .card h2 {
-      margin: 0 0 10px;
-      font-size: 22px;
-      letter-spacing: 0.2px;
-      font-weight: 700;
-      color: #ffffff;
-    }
-
-    .small {
-      font-size: 12px;
-      color: #ffffff;
-    }
-
-    .form-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      margin-bottom: 10px;
-    }
-
-    @media (max-width: 700px) {
-      .form-grid { grid-template-columns: 1fr; }
-    }
-
-    label {
-      display: block;
-      font-size: 12px;
-      color: #ffffff;
-      margin: 8px 0 6px;
-    }
-
-    input,
-    select {
-      width: 100%;
-      padding: 11px 12px;
-      border-radius: 12px;
-      border: 1px solid var(--line);
-      background: rgba(0,0,0,0.15);
-      color: #ffffff !important;
-      outline: none;
-    }
-
-    select option {
-      color: #111;
-    }
-
-    input::placeholder {
-      color: rgba(255, 255, 255, 0.65);
-    }
-
-    input:focus,
-    select:focus {
-      border-color: rgba(122,162,255,0.6);
-      box-shadow: 0 0 0 3px rgba(122,162,255,0.12);
-    }
-
-    .actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-top: 10px;
-      align-items: center;
-    }
-
+    select option { color: #111; }
+    input::placeholder { color: rgba(255,255,255,0.65); }
+    .actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; align-items: center; }
     button {
-      border: 1px solid var(--line);
-      background: rgba(122,162,255,0.15);
-      color: var(--text);
-      padding: 10px 14px;
-      border-radius: 12px;
-      cursor: pointer;
-      font-weight: 600;
-      letter-spacing: 0.2px;
+      border: 1px solid var(--line); background: rgba(122,162,255,0.15); color: var(--text);
+      padding: 10px 14px; border-radius: 12px; cursor: pointer; font-weight: 600;
     }
-
     button:hover { background: rgba(122,162,255,0.22); }
     button.primary { background: rgba(57,217,138,0.18); }
     button.primary:hover { background: rgba(57,217,138,0.26); }
     button.danger { background: rgba(255,90,95,0.16); }
     button.danger:hover { background: rgba(255,90,95,0.24); }
-
     .msg {
-      margin-top: 12px;
-      border-radius: 12px;
-      padding: 10px 12px;
-      border: 1px solid var(--line);
-      display: none;
+      margin-top: 12px; border-radius: 12px; padding: 10px 12px; border: 1px solid var(--line); display: none;
     }
-
     .msg.ok { display: block; background: rgba(57,217,138,0.10); }
     .msg.err { display: block; background: rgba(255,90,95,0.10); }
-
-    .list {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      max-height: 650px;
-      overflow: auto;
-      padding-right: 4px;
-      margin-top: 10px;
-    }
-
+    .list { display: flex; flex-direction: column; gap: 10px; max-height: 650px; overflow: auto; padding-right: 4px; margin-top: 10px; }
     .record {
-      border: 1px solid var(--line);
-      border-radius: 14px;
-      padding: 12px;
-      background: rgba(0,0,0,0.12);
+      border: 1px solid var(--line); border-radius: 14px; padding: 12px; background: rgba(0,0,0,0.12);
     }
-
     .record-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      gap: 12px;
-      margin-bottom: 8px;
+      display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 8px;
     }
-
-    .record strong {
-      font-size: 18px;
-      display: block;
-      margin-bottom: 2px;
-      color: #ffffff;
-    }
-
-    .meta {
-      color: #ffffff;
-      font-size: 12px;
-    }
-
-    .macro-row {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 8px;
-      margin: 10px 0;
-    }
-
-    @media (max-width: 600px) {
-      .macro-row {
-        grid-template-columns: repeat(2, 1fr);
-      }
-    }
-
+    .record strong { font-size: 18px; display: block; margin-bottom: 2px; color: #fff; }
+    .meta { color: #fff; font-size: 12px; }
+    .macro-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin: 10px 0; }
+    @media (max-width: 600px) { .macro-row { grid-template-columns: repeat(2, 1fr); } }
     .macro-box {
-      background: rgba(255,255,255,0.03);
-      border: 1px solid var(--line);
-      border-radius: 12px;
-      padding: 10px;
+      background: rgba(255,255,255,0.03); border: 1px solid var(--line); border-radius: 12px; padding: 10px;
     }
-
-    .macro-box .label {
-      font-size: 11px;
-      color: #ffffff;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-
-    .macro-box .num {
-      font-size: 18px;
-      font-weight: 700;
-      margin-top: 4px;
-      color: #ffffff;
-    }
-
-    .record-actions {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      margin-top: 10px;
-    }
-
-    .mono {
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
-    }
-
-    .author-line {
-      margin-top: 14px;
-      color: #ffffff;
-      font-size: 12px;
-    }
-
-    hr {
-      border: 0;
-      border-top: 1px solid var(--line);
-      margin: 16px 0;
-    }
-
-    /* Override Bootstrap card text defaults */
-    .card,
-    .card h2,
-    .card label,
-    .card .small,
-    .card .meta,
-    .card .label,
-    .card strong,
-    .card .num,
-    .summary-card,
-    .summary-card h3,
-    .summary-card .value {
-      color: #ffffff !important;
-    }
+    .macro-box .label { font-size: 11px; color: #fff; text-transform: uppercase; }
+    .macro-box .num { font-size: 18px; font-weight: 700; margin-top: 4px; color: #fff; }
+    .record-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; }
+    .author-line { margin-top: 14px; color: #fff; font-size: 12px; }
+    hr { border: 0; border-top: 1px solid var(--line); margin: 16px 0; }
   </style>
 </head>
 <body>
@@ -343,23 +114,32 @@
       </div>
     </header>
 
+    <section class="auth-bar">
+      <h2>Account</h2>
+      <div class="small">Register or log in to access your food entries.</div>
+      <div class="form-grid">
+        <div>
+          <label for="authUsername">Username</label>
+          <input id="authUsername" placeholder="Enter username" autocomplete="off" />
+        </div>
+        <div>
+          <label for="authPassword">Password</label>
+          <input id="authPassword" type="password" placeholder="Enter password" />
+        </div>
+      </div>
+      <div class="actions">
+        <button id="registerBtn" type="button">Register</button>
+        <button id="loginBtn" class="primary" type="button">Login</button>
+        <button id="logoutBtn" class="danger" type="button">Logout</button>
+      </div>
+      <div class="small" id="authStatus" style="margin-top:10px;">Not logged in</div>
+    </section>
+
     <section class="summary-grid">
-      <div class="summary-card">
-        <h3>Calories</h3>
-        <div class="value" id="totalCalories">0</div>
-      </div>
-      <div class="summary-card">
-        <h3>Protein</h3>
-        <div class="value" id="totalProtein">0g</div>
-      </div>
-      <div class="summary-card">
-        <h3>Carbs</h3>
-        <div class="value" id="totalCarbs">0g</div>
-      </div>
-      <div class="summary-card">
-        <h3>Fat</h3>
-        <div class="value" id="totalFat">0g</div>
-      </div>
+      <div class="summary-card"><h3>Calories</h3><div class="value" id="totalCalories">0</div></div>
+      <div class="summary-card"><h3>Protein</h3><div class="value" id="totalProtein">0g</div></div>
+      <div class="summary-card"><h3>Carbs</h3><div class="value" id="totalCarbs">0g</div></div>
+      <div class="summary-card"><h3>Fat</h3><div class="value" id="totalFat">0g</div></div>
     </section>
 
     <div class="grid">
@@ -428,26 +208,29 @@
         <div id="appInfo" class="small">Loading…</div>
 
         <div class="author-line">
-          Built by <strong>Griffin Shewbart</strong> using Node.js, Express, MongoDB, Bootstrap, jQuery, Render, and GCP.
+          Built by <strong>Griffin Shewbart</strong> using Node.js, Express, MongoDB Atlas, Mongoose, Bootstrap, jQuery, JWT, and GCP.
         </div>
       </section>
 
       <section class="card">
         <h2>Food Entries</h2>
-        <div class="small">Newest first. Persistent MongoDB-backed data.</div>
-        <div id="foodList" class="list">
-          <div class="small">Loading…</div>
-        </div>
+        <div class="small">Newest first. Protected route requires login.</div>
+        <div id="foodList" class="list"><div class="small">Loading…</div></div>
       </section>
     </div>
   </div>
 
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-
   <script>
     let editId = null;
 
     const els = {
+      authUsername: document.getElementById('authUsername'),
+      authPassword: document.getElementById('authPassword'),
+      registerBtn: document.getElementById('registerBtn'),
+      loginBtn: document.getElementById('loginBtn'),
+      logoutBtn: document.getElementById('logoutBtn'),
+      authStatus: document.getElementById('authStatus'),
       foodName: document.getElementById('foodName'),
       mealType: document.getElementById('mealType'),
       calories: document.getElementById('calories'),
@@ -475,6 +258,23 @@
         els.message.className = 'msg';
         els.message.textContent = '';
       }, 3200);
+    }
+
+    function getToken() {
+      return localStorage.getItem('fittrackToken') || '';
+    }
+
+    function getAuthHeaders(includeJson = false) {
+      const headers = {};
+      const token = getToken();
+      if (token) headers.Authorization = `Bearer ${token}`;
+      if (includeJson) headers['Content-Type'] = 'application/json';
+      return headers;
+    }
+
+    function updateAuthStatus() {
+      const username = localStorage.getItem('fittrackUsername');
+      els.authStatus.textContent = username ? `Logged in as ${username}` : 'Not logged in';
     }
 
     function setEditMode(id) {
@@ -535,7 +335,6 @@
       try {
         const { res, data } = await apiJson('/api/class');
         if (!res.ok) throw new Error('bad');
-
         els.appInfo.innerHTML = `
           <div><strong>${data.appName}</strong></div>
           <div class="small">${data.purpose}</div>
@@ -549,11 +348,26 @@
     }
 
     async function loadFoods() {
+      if (!getToken()) {
+        els.foodList.innerHTML = '<div class="small">Log in to view food entries.</div>';
+        updateTotals([]);
+        return;
+      }
+
       els.foodList.innerHTML = '<div class="small">Loading…</div>';
 
       try {
-        const { res, data } = await apiJson('/api/foods');
-        if (!res.ok) throw new Error('bad');
+        const { res, data } = await apiJson('/api/foods', {
+          headers: getAuthHeaders()
+        });
+
+        if (!res.ok) {
+          if (res.status === 401) {
+            els.foodList.innerHTML = '<div class="small">Unauthorized. Please log in again.</div>';
+            return;
+          }
+          throw new Error('bad');
+        }
 
         const records = Array.isArray(data) ? data : [];
         updateTotals(records);
@@ -572,7 +386,7 @@
           const carbs = Number(r.carbs ?? 0);
           const fat = Number(r.fat ?? 0);
           const date = escapeHtml(r.date ?? '');
-          const ts = r.timestamp ? new Date(r.timestamp).toLocaleString() : '';
+          const ts = r.createdAt ? new Date(r.createdAt).toLocaleString() : '';
 
           return `
             <div class="record" data-id="${escapeHtml(id)}"
@@ -592,22 +406,10 @@
               </div>
 
               <div class="macro-row">
-                <div class="macro-box">
-                  <div class="label">Calories</div>
-                  <div class="num">${calories}</div>
-                </div>
-                <div class="macro-box">
-                  <div class="label">Protein</div>
-                  <div class="num">${protein}g</div>
-                </div>
-                <div class="macro-box">
-                  <div class="label">Carbs</div>
-                  <div class="num">${carbs}g</div>
-                </div>
-                <div class="macro-box">
-                  <div class="label">Fat</div>
-                  <div class="num">${fat}g</div>
-                </div>
+                <div class="macro-box"><div class="label">Calories</div><div class="num">${calories}</div></div>
+                <div class="macro-box"><div class="label">Protein</div><div class="num">${protein}g</div></div>
+                <div class="macro-box"><div class="label">Carbs</div><div class="num">${carbs}g</div></div>
+                <div class="macro-box"><div class="label">Fat</div><div class="num">${fat}g</div></div>
               </div>
 
               <div class="meta">Recorded: ${escapeHtml(ts)}</div>
@@ -619,13 +421,69 @@
             </div>
           `;
         }).join('');
-
       } catch {
         els.foodList.innerHTML = '<div class="small">Error loading food entries.</div>';
       }
     }
 
+    async function registerUser() {
+      const username = els.authUsername.value.trim();
+      const password = els.authPassword.value.trim();
+      if (!username || !password) {
+        showMessage('Enter username and password first.', false);
+        return;
+      }
+
+      const { res, data } = await apiJson('/api/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password })
+      });
+
+      showMessage(data.message || data.error || 'Register request finished.', res.ok);
+    }
+
+    async function loginUser() {
+      const username = els.authUsername.value.trim();
+      const password = els.authPassword.value.trim();
+      if (!username || !password) {
+        showMessage('Enter username and password first.', false);
+        return;
+      }
+
+      const { res, data } = await apiJson('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password })
+      });
+
+      if (res.ok && data.token) {
+        localStorage.setItem('fittrackToken', data.token);
+        localStorage.setItem('fittrackUsername', data.username);
+        updateAuthStatus();
+        showMessage('Login successful.', true);
+        await loadFoods();
+      } else {
+        showMessage(data.error || 'Login failed.', false);
+      }
+    }
+
+    function logoutUser() {
+      localStorage.removeItem('fittrackToken');
+      localStorage.removeItem('fittrackUsername');
+      updateAuthStatus();
+      clearEditMode();
+      els.foodList.innerHTML = '<div class="small">Log in to view food entries.</div>';
+      updateTotals([]);
+      showMessage('Logged out.', true);
+    }
+
     async function submitFood() {
+      if (!getToken()) {
+        showMessage('You must log in first.', false);
+        return;
+      }
+
       const foodName = els.foodName.value.trim();
       const mealType = els.mealType.value.trim();
       const calories = els.calories.value.trim();
@@ -654,7 +512,7 @@
 
       const { res, data } = await apiJson(url, {
         method,
-        headers: { 'Content-Type': 'application/json' },
+        headers: getAuthHeaders(true),
         body: JSON.stringify(payload)
       });
 
@@ -677,7 +535,10 @@
       const ok = confirm('Delete this food entry?');
       if (!ok) return;
 
-      const { res, data } = await apiJson(`/api/foods/${id}`, { method: 'DELETE' });
+      const { res, data } = await apiJson(`/api/foods/${id}`, {
+        method: 'DELETE',
+        headers: getAuthHeaders()
+      });
 
       if (res.ok) {
         showMessage(data.message || 'Deleted.', true);
@@ -686,6 +547,10 @@
         showMessage(data.error || 'Delete failed.', false);
       }
     }
+
+    els.registerBtn.addEventListener('click', registerUser);
+    els.loginBtn.addEventListener('click', loginUser);
+    els.logoutBtn.addEventListener('click', logoutUser);
 
     els.submitBtn.addEventListener('click', (e) => {
       e.preventDefault();
@@ -726,7 +591,6 @@
         els.carbs.value = recordEl.getAttribute('data-carbs') || '';
         els.fat.value = recordEl.getAttribute('data-fat') || '';
         els.dateText.value = recordEl.getAttribute('data-date') || '';
-
         setEditMode(id);
         showMessage('Edit mode enabled. Update the fields and save.', true);
       }
@@ -738,19 +602,17 @@
       const mm = String(now.getMonth() + 1).padStart(2, '0');
       const dd = String(now.getDate()).padStart(2, '0');
       els.dateText.value = `${yyyy}-${mm}-${dd}`;
-
+      updateAuthStatus();
       loadHealth();
       loadAppInfo();
       loadFoods();
 
-      // jQuery demo for rubric
       $('#submitBtn').hover(
         function () { $(this).css('transform', 'translateY(-1px)'); },
         function () { $(this).css('transform', 'translateY(0)'); }
       );
     })();
   </script>
-
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
