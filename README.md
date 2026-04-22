@@ -99,3 +99,33 @@ Protected endpoints:
 ### 1. Install dependencies
 ```bash
 npm install
+
+---
+
+## 🌐 Deployment Notes
+
+- Hosted on Google Cloud VM
+- Uses PM2 for process management
+- NGINX configured as reverse proxy
+- GitHub Actions used for deployment
+
+---
+
+
+## 🧠 Reflection
+
+- Backend API design
+- Database integration
+- Authentication and security
+- Frontend UI interaction
+- Cloud deployment
+
+---
+
+
+## 🔮 Future Improvements
+
+- Search and filtering
+- Macro charts / analytics
+- User-specific data isolation
+- Improved UI/UX
