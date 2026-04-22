@@ -1,127 +1,101 @@
-# FitTrack – App Proposal
+# FitTrack
 
-## Overview
-FitTrack is a full-stack web application designed to help users track daily food intake and monitor macronutrients such as calories, protein, carbohydrates, and fat. The app provides a clean and simple interface for logging meals and viewing nutrition data.
-
----
-
-## App Idea
-FitTrack allows users to log food entries and track their nutrition throughout the day. The goal is to provide a lightweight, easy-to-use alternative to more complex apps like MyFitnessPal.
+FitTrack is a simple nutrition and macro tracking web application inspired by MyFitnessPal. Users can log meals, track calories/macros, and manage entries through a clean UI.
 
 ---
 
-## Target Users
-- College students tracking nutrition  
-- Individuals interested in fitness and dieting  
-- Users who want a simple macro tracking tool  
+## 🚀 Live App (GCP)
+http://localhost:3000
 
 ---
 
-## Core Features (Current)
-- Create, read, update, and delete food entries (CRUD)  
-- Track calories, protein, carbs, and fat  
-- View all entries in a dashboard  
-- Persistent MongoDB database storage  
-- Deployed full-stack application  
+## 📦 Repository
+https://github.com/gshew24/griff-devops-2026
 
 ---
 
-## Planned Features
-- User authentication (login/register system)  
-- Search functionality for food entries  
-- Improved UI/UX design using Bootstrap  
-- Refactored backend architecture (routes, controllers, models)  
+## 👤 Author
+Griffin Shewbart
+CIS 486
 
 ---
 
-## Tech Stack
-
-### Frontend
-- HTML  
-- CSS  
-- Bootstrap  
-- JavaScript  
-- jQuery  
-
-### Backend
-- Node.js  
-- Express.js  
-
-### Database
-- MongoDB Atlas  
-
-### Deployment / DevOps
-- Google Cloud Platform (GCP VM)  
-- PM2 (process manager)  
-- NGINX (reverse proxy)  
-- GitHub Actions (CI/CD)  
-- HTTPS via Let's Encrypt  
+## 🛠 Tech Stack
+- Node.js
+- Express.js
+- MongoDB Atlas
+- Mongoose
+- JWT Authentication
+- Bootstrap
+- jQuery
+- Google Cloud Platform (VM)
+- NGINX Reverse Proxy
 
 ---
 
-## Product Backlog
+## ✅ Capabilities
 
-### Epics
-- User Authentication  
-- Food Tracking System  
-- UI/UX Improvements  
-
-### Issues
-- Refactor backend into controllers and routes  
-- Implement login and registration system  
-- Add search functionality  
-- Improve form validation  
-- Enhance dashboard UI  
-- Write deployment documentation  
-- Create debug case study  
+- [x] MongoDB Integration (Atlas)
+- [x] Mongoose Schema + Models
+- [x] RESTful API (CRUD)
+- [x] Authentication (Register/Login)
+- [x] Protected Routes (JWT Middleware)
+- [x] UI Integration with API
+- [x] Deployment to GCP VM
+- [ ] Search / Filter (Planned Enhancement)
 
 ---
 
-## Selected Capability Boxes
-- Advanced Architecture  
-- Authentication Upgrade  
-- Database Upgrade (MongoDB Atlas)  
-- UI / UX Improvement  
-- Deployment Guide / DevOps Write-Up  
-- Debug Case Study  
-- Search Feature  
+## 📌 Issues (Development Work)
+
+- Mongoose Integration  
+  https://github.com/gshew24/griff-devops-2026/issues/1
+
+- Authentication System  
+  https://github.com/gshew24/griff-devops-2026/issues/2
+
+- Search Feature 
+  https://github.com/gshew24/griff-devops-2026/issues/3
 
 ---
 
-## Milestones
+## 🗺 Milestones
 
-### Milestone 1
-- Repository setup  
-- Working full-stack CRUD application  
-- Initial deployment to GCP  
-
-### Milestone 2
-- Refactor backend into controllers and routes  
-- Implement authentication system  
-
-### Milestone 3
-- UI improvements  
-- Add search functionality  
-- Final deployment polish and documentation  
+- Core Backend Complete  
+- Authentication Complete  
+- UI + Integration Complete  
+- Deployment Complete  
 
 ---
 
-## Access
+## 🔐 Authentication
 
-### GitHub Repository
-🔗 https://github.com/gshew24/griff-devops-2026
+Users can:
+- Register an account
+- Login to receive a JWT token
+- Access protected endpoints
 
-### Live Application
-🔗 https://fitness.barrycumbie.com
-
-### Access Notes
-- Instructor added as collaborator  
-- Repository access granted  
-- GCP VM access configured using SSH (`student-key`)  
+Protected endpoints:
+- `/api/foods`
 
 ---
 
-## Author
-Griffin Shewbart  
-CIS 486 – Web Development  
-Spring 2026
+## 📡 API Endpoints
+
+### Auth
+- POST `/api/auth/register`
+- POST `/api/auth/login`
+
+### Food
+- GET `/api/foods`
+- POST `/api/foods`
+- PUT `/api/foods/:id`
+- DELETE `/api/foods/:id`
+
+---
+
+## ⚙️ Setup Instructions
+
+### 1. Install dependencies
+```bash
+npm install
