@@ -215,6 +215,12 @@
       <section class="card">
         <h2>Food Entries</h2>
         <div class="small">Newest first. Protected route requires login.</div>
+
+        <div style="margin-top:10px;">
+          <label for="searchInput">Search entries</label>
+          <input id="searchInput" placeholder="Search by food name, meal type, or date" autocomplete="off" />
+        </div>
+
         <div id="foodList" class="list"><div class="small">Loading…</div></div>
       </section>
     </div>
@@ -223,6 +229,7 @@
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
   <script>
     let editId = null;
+    let allFoods = [];
 
     const els = {
       authUsername: document.getElementById('authUsername'),
@@ -244,6 +251,7 @@
       message: document.getElementById('message'),
       appInfo: document.getElementById('appInfo'),
       foodList: document.getElementById('foodList'),
+      searchInput: document.getElementById('searchInput'),
       healthDot: document.getElementById('healthDot'),
       totalCalories: document.getElementById('totalCalories'),
       totalProtein: document.getElementById('totalProtein'),
@@ -319,6 +327,79 @@
       els.totalFat.textContent = `${totals.fat}g`;
     }
 
+    function renderFoods(records) {
+      updateTotals(records);
+
+      if (records.length === 0) {
+        els.foodList.innerHTML = '<div class="small">No matching food entries.</div>';
+        return;
+      }
+
+      els.foodList.innerHTML = records.map(r => {
+        const id = r._id;
+        const foodName = escapeHtml(r.foodName ?? '');
+        const mealType = escapeHtml(r.mealType ?? '');
+        const calories = Number(r.calories ?? 0);
+        const protein = Number(r.protein ?? 0);
+        const carbs = Number(r.carbs ?? 0);
+        const fat = Number(r.fat ?? 0);
+        const date = escapeHtml(r.date ?? '');
+        const ts = r.createdAt ? new Date(r.createdAt).toLocaleString() : '';
+
+        return `
+          <div class="record" data-id="${escapeHtml(id)}"
+               data-foodname="${foodName}"
+               data-mealtype="${mealType}"
+               data-calories="${calories}"
+               data-protein="${protein}"
+               data-carbs="${carbs}"
+               data-fat="${fat}"
+               data-date="${date}">
+            <div class="record-top">
+              <div>
+                <strong>${foodName}</strong>
+                <div class="meta">${mealType}</div>
+              </div>
+              <div class="meta">${date}</div>
+            </div>
+
+            <div class="macro-row">
+              <div class="macro-box"><div class="label">Calories</div><div class="num">${calories}</div></div>
+              <div class="macro-box"><div class="label">Protein</div><div class="num">${protein}g</div></div>
+              <div class="macro-box"><div class="label">Carbs</div><div class="num">${carbs}g</div></div>
+              <div class="macro-box"><div class="label">Fat</div><div class="num">${fat}g</div></div>
+            </div>
+
+            <div class="meta">Recorded: ${escapeHtml(ts)}</div>
+
+            <div class="record-actions">
+              <button type="button" data-action="edit">Edit</button>
+              <button type="button" class="danger" data-action="delete">Delete</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function filterFoods() {
+      const term = els.searchInput.value.trim().toLowerCase();
+
+      if (!term) {
+        renderFoods(allFoods);
+        return;
+      }
+
+      const filtered = allFoods.filter(r => {
+        const foodName = String(r.foodName ?? '').toLowerCase();
+        const mealType = String(r.mealType ?? '').toLowerCase();
+        const date = String(r.date ?? '').toLowerCase();
+
+        return foodName.includes(term) || mealType.includes(term) || date.includes(term);
+      });
+
+      renderFoods(filtered);
+    }
+
     async function loadHealth() {
       try {
         const { res } = await apiJson('/api/health');
@@ -349,6 +430,7 @@
 
     async function loadFoods() {
       if (!getToken()) {
+        allFoods = [];
         els.foodList.innerHTML = '<div class="small">Log in to view food entries.</div>';
         updateTotals([]);
         return;
@@ -363,64 +445,22 @@
 
         if (!res.ok) {
           if (res.status === 401) {
+            allFoods = [];
             els.foodList.innerHTML = '<div class="small">Unauthorized. Please log in again.</div>';
             return;
           }
           throw new Error('bad');
         }
 
-        const records = Array.isArray(data) ? data : [];
-        updateTotals(records);
+        allFoods = Array.isArray(data) ? data : [];
 
-        if (records.length === 0) {
+        if (allFoods.length === 0) {
           els.foodList.innerHTML = '<div class="small">No food entries yet.</div>';
+          updateTotals([]);
           return;
         }
 
-        els.foodList.innerHTML = records.map(r => {
-          const id = r._id;
-          const foodName = escapeHtml(r.foodName ?? '');
-          const mealType = escapeHtml(r.mealType ?? '');
-          const calories = Number(r.calories ?? 0);
-          const protein = Number(r.protein ?? 0);
-          const carbs = Number(r.carbs ?? 0);
-          const fat = Number(r.fat ?? 0);
-          const date = escapeHtml(r.date ?? '');
-          const ts = r.createdAt ? new Date(r.createdAt).toLocaleString() : '';
-
-          return `
-            <div class="record" data-id="${escapeHtml(id)}"
-                 data-foodname="${foodName}"
-                 data-mealtype="${mealType}"
-                 data-calories="${calories}"
-                 data-protein="${protein}"
-                 data-carbs="${carbs}"
-                 data-fat="${fat}"
-                 data-date="${date}">
-              <div class="record-top">
-                <div>
-                  <strong>${foodName}</strong>
-                  <div class="meta">${mealType}</div>
-                </div>
-                <div class="meta">${date}</div>
-              </div>
-
-              <div class="macro-row">
-                <div class="macro-box"><div class="label">Calories</div><div class="num">${calories}</div></div>
-                <div class="macro-box"><div class="label">Protein</div><div class="num">${protein}g</div></div>
-                <div class="macro-box"><div class="label">Carbs</div><div class="num">${carbs}g</div></div>
-                <div class="macro-box"><div class="label">Fat</div><div class="num">${fat}g</div></div>
-              </div>
-
-              <div class="meta">Recorded: ${escapeHtml(ts)}</div>
-
-              <div class="record-actions">
-                <button type="button" data-action="edit">Edit</button>
-                <button type="button" class="danger" data-action="delete">Delete</button>
-              </div>
-            </div>
-          `;
-        }).join('');
+        filterFoods();
       } catch {
         els.foodList.innerHTML = '<div class="small">Error loading food entries.</div>';
       }
@@ -473,6 +513,8 @@
       localStorage.removeItem('fittrackUsername');
       updateAuthStatus();
       clearEditMode();
+      allFoods = [];
+      els.searchInput.value = '';
       els.foodList.innerHTML = '<div class="small">Log in to view food entries.</div>';
       updateTotals([]);
       showMessage('Logged out.', true);
@@ -551,6 +593,7 @@
     els.registerBtn.addEventListener('click', registerUser);
     els.loginBtn.addEventListener('click', loginUser);
     els.logoutBtn.addEventListener('click', logoutUser);
+    els.searchInput.addEventListener('input', filterFoods);
 
     els.submitBtn.addEventListener('click', (e) => {
       e.preventDefault();
