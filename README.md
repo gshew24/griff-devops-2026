@@ -43,13 +43,13 @@ https://github.com/gshew24/griff-devops-2026
 ## 📌 Issues (Development Work)
 
 - Mongoose Integration  
-  https://github.com/gshew24/griff-devops-2026/issues/1
+  https://github.com/gshew24/griff-devops-2026/issues/9
 
 - Authentication System  
-  https://github.com/gshew24/griff-devops-2026/issues/2
+  https://github.com/gshew24/griff-devops-2026/issues/4
 
 - Search Feature 
-  https://github.com/gshew24/griff-devops-2026/issues/3
+  https://github.com/gshew24/griff-devops-2026/issues/5
 
 ---
 
@@ -116,7 +116,6 @@ npm install
 
 ## 🔮 Future Improvements
 
-- Search and filtering
 - Macro charts / analytics
 - User-specific data isolation
 - Improved UI/UX
