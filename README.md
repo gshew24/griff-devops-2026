@@ -88,8 +88,8 @@ Protected endpoints:
 
 ---
 
-### 1. Install dependencies
-```bash
+### Install dependencies
+bash
 npm install
 
 ---
@@ -102,7 +102,6 @@ npm install
 - GitHub Actions used for deployment
 
 ---
-
 
 ## 🧠 Reflection
 
@@ -124,7 +123,7 @@ npm install
 
 ---
 
-##👤 Author
+## 👤 Author
 
 - Griffin Shewbart 
 - CIS 486
