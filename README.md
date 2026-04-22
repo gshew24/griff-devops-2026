@@ -14,12 +14,6 @@ https://github.com/gshew24/griff-devops-2026
 
 ---
 
-## 👤 Author
-Griffin Shewbart
-CIS 486
-
----
-
 ## 🛠 Tech Stack
 - Node.js
 - Express.js
@@ -94,8 +88,6 @@ Protected endpoints:
 
 ---
 
-## ⚙️ Setup Instructions
-
 ### 1. Install dependencies
 ```bash
 npm install
@@ -129,3 +121,10 @@ npm install
 - Macro charts / analytics
 - User-specific data isolation
 - Improved UI/UX
+
+---
+
+##👤 Author
+
+- Griffin Shewbart 
+- CIS 486
