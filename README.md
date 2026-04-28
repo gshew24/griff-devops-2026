@@ -66,6 +66,22 @@ The goal is to provide a simple and efficient alternative to complex nutrition a
 
 ---
 
+## 🚀 Sprint 99
+
+Future improvements, additional features, and known bugs for FitTrack.
+
+### 🔧 Planned Features
+- [Add advanced filtering for food entries](https://github.com/gshew24/griff-devops-2026/issues/10)
+- [Add charts for macro tracking](https://github.com/gshew24/griff-devops-2026/issues/11)
+
+### 🎨 Improvements
+- [Enhance UI for mobile responsiveness](https://github.com/gshew24/griff-devops-2026/issues/12)
+
+### 🐞 Known Bugs
+- [Fix login persistence issue](https://github.com/gshew24/griff-devops-2026/issues/13)
+
+---
+
 ## 🛠️ Tech Stack
 
 ### Frontend
