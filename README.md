@@ -53,16 +53,16 @@ The goal is to provide a simple and efficient alternative to complex nutrition a
 
 | Component | Capability | Link | Explanation |
 |----------|----------|------|-------------|
-| Authentication System | Implemented JWT-based authentication | Issue #2 | Users must log in to access protected routes and data |
-| Database Upgrade | MongoDB Atlas cloud database | Issue #1 | Stores user accounts and food entries persistently |
-| UI/UX Overhaul | Styled UI using Bootstrap and custom CSS | Code (attend.html) | Created a clean and modern interface for usability |
-| Search Functionality | Added client-side search/filtering | Issue #2 | Allows users to quickly filter food entries |
-| Debug Case Study | Fixed MongoDB connection + VM permission errors | Issue #1 | Resolved connection string errors and EACCES permission issues |
-| System / Infrastructure | Deployed on GCP VM with NGINX + PM2 | README / Demo | Handles production hosting and reverse proxy |
-| Monitoring / Logging | Used PM2 and server logs | Demo | Ensures app stays running and can be debugged |
-| Automation (CI/CD) | Manual GitHub deployment workflow | GitHub commits | Code is pushed and pulled to VM consistently |
-| Deployment Guide | Documented deployment steps | README | Steps include SSH, npm install, PM2, and NGINX config |
-| API / Backend | RESTful Express API | Code (routes/controllers) | Handles CRUD operations for food entries |
+| Authentication System | Implemented JWT-based authentication | [Issue #4](https://github.com/gshew24/griff-devops-2026/issues/4) | Users must log in to access protected routes and data |
+| Database Upgrade | MongoDB Atlas cloud database | [Issue #9](https://github.com/gshew24/griff-devops-2026/issues/9) | Stores user accounts and food entries persistently |
+| UI/UX Overhaul | Styled UI using Bootstrap and custom CSS | [Issue #6](https://github.com/gshew24/griff-devops-2026/issues/6) | Created a clean and modern interface for usability |
+| Search Functionality | Added client-side search/filtering | [Issue #5](https://github.com/gshew24/griff-devops-2026/issues/5) | Allows users to quickly filter food entries |
+| Debug Case Study | Fixed MongoDB connection + VM permission errors | [Issue #8](https://github.com/gshew24/griff-devops-2026/issues/8) | Resolved connection string errors, index conflicts, and EACCES permission issues |
+| System / Infrastructure | Deployed on GCP VM with NGINX + PM2 | [Deployment Guide](https://github.com/gshew24/griff-devops-2026#-deployment-guide) | Handles production hosting and reverse proxy |
+| Monitoring / Logging | Used PM2 and server logs | [PM2 Logs Demo](https://github.com/gshew24/griff-devops-2026) | Ensures app stays running and can be debugged |
+| Automation (CI/CD) | Manual GitHub deployment workflow | [Repository Commits](https://github.com/gshew24/griff-devops-2026/commits/main) | Code is pushed and pulled to VM consistently |
+| Deployment Guide | Documented deployment steps | [README Deployment Section](https://github.com/gshew24/griff-devops-2026#-deployment-guide) | Steps include SSH, npm install, PM2, and NGINX config |
+| API / Backend | RESTful Express API | [Routes Folder](https://github.com/gshew24/griff-devops-2026/tree/main/routes) | Handles CRUD operations for food entries |
 
 ---
 
